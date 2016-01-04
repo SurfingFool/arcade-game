@@ -4,25 +4,22 @@ var Enemy = function(x,y,speed) {
     // we've provided one for you to get started
     this.x = x;
     this.y = y;
-    //this.speed = speed;
+    // Generates initial random speed for Enemy
     this.speed = Math.floor((Math.random() * 400) + 100);
     
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    height = 50;
-    width = 80;
-
 };
 
+// Speed variable (random) made accessible globally/to prototypes.
 var speed = Math.floor((Math.random() * 400) + 100);
-
+// allEnemies array.
 var allEnemies = [];
 allEnemies[0] = new Enemy(-400,65);
 allEnemies[1] = new Enemy(-600,150);
 allEnemies[2] = new Enemy(-120,230);
 allEnemies[3] = new Enemy(-240,150);
-
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -32,7 +29,8 @@ Enemy.prototype.update = function(dt) {
     // all computers.
     
     this.x += this.speed * dt;
-    //Controls what happens when enemy goes off playing grid.
+    // Controls what happens when enemy goes off playing grid/establishes
+    // random starting position each time across.
     if (this.x > 500) this.x = Math.floor(Math.random() * (-800 - (-400) + (-400)));
 };
 
@@ -68,24 +66,20 @@ var checkCollisions = function() {
             alert ("Gotcha! Start Over!");
             player.x = 200;
             player.y = 406;
-        } else if (player.y <= -10) {
-            alert ("WAY TO GO!");
-            player.x = 200;
-            player.y = 406;
-        }
+        } 
     }
 };
 
 Player.prototype.update = function() {
     checkCollisions();
-    
-// Limit the boundaries where player can move to
+
+// Limit the boundaries where player can move within
     if (this.x < 0) {
         this.x = 0;
     } else if (this.x > 406) {
         this.x = 406;
-    } else if (this.y < -10) {
-        this.y = -10;
+    } else if (this.y < -9) {
+        this.y = -9;
     } else if (this.y > 406) {
         this.y = 406;
     }
@@ -104,6 +98,19 @@ Player.prototype.handleInput = function(dir) {
         this.y += 83;
     }  else if (dir === "left") {
         this.x -= 101;
+    };
+
+    // Function that works with setTimeout below to delay calling the function.
+    resetPlayer = function() {
+        alert ("WAY TO GO!");
+        player.x = 200;
+        player.y = 406;
+    }
+    
+    // Condition when reaching water in response to input.  Includes
+    // (function, milliseconds).
+    if (player.y <= -9) {
+        setTimeout(resetPlayer, 400);
     }
 };
 
