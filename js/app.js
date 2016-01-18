@@ -1,5 +1,5 @@
 // Enemies our player must avoid
-var Enemy = function(x,y,speed) {
+var Enemy = function(x,y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
     this.x = x;
@@ -12,9 +12,9 @@ var Enemy = function(x,y,speed) {
     this.sprite = 'images/enemy-bug.png';
 };
 
-// Speed variable (random) made accessible globally/to prototypes.
-var speed = Math.floor((Math.random() * 400) + 100);
-// allEnemies array.
+// Instantiate (create an instance of) Enemy in order to 
+// implement the function.
+// Place all enemy objects in an array called allEnemies.
 var allEnemies = [];
 allEnemies[0] = new Enemy(-400,65);
 allEnemies[1] = new Enemy(-600,150);
@@ -49,10 +49,9 @@ var Player = function(x,y,dir) {
     this.sprite = 'images/char-boy.png';
 };
 
-// Now instantiate your objects:
-// Place all enemy objects in an array called allEnemies (above)
+// Now instantiate your Player function object (or child of the function):
 // Place the player object (constructed from the Player class)
-// in a variable called player and set initial x & y properties.
+// in a variable called player and set initial x & y properties or values.
 var player = new Player(200,406); 
 
 // Function that checks for collisions between player and enemies.
@@ -70,8 +69,8 @@ var checkCollisions = function() {
     }
 };
 
-Player.prototype.update = function() {
-    checkCollisions();
+Player.prototype.update = function(allEnemies) {
+    checkCollisions(allEnemies);
 
 // Limit the boundaries where player can move within
     if (this.x < 0) {
@@ -87,7 +86,7 @@ Player.prototype.update = function() {
 
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 Player.prototype.handleInput = function(dir) {
     if (dir === "up") {
@@ -98,20 +97,24 @@ Player.prototype.handleInput = function(dir) {
         this.y += 83;
     }  else if (dir === "left") {
         this.x -= 101;
-    };
+    }
 
-    // Function that works with setTimeout below to delay calling the function.
-    resetPlayer = function() {
-        alert ("WAY TO GO!");
-        player.x = 200;
-        player.y = 406;
+// Condition when reaching water in response to input. Works with 
+// setTimeout to delay calling the resetPlayer function.  Includes 
+// (function, milliseconds).
+    if (this.y <= -9) {
+        var winner = this;
+        setTimeout(winner.resetPlayer, 100);
     }
-    
-    // Condition when reaching water in response to input.  Includes
-    // (function, milliseconds).
-    if (player.y <= -9) {
-        setTimeout(resetPlayer, 400);
-    }
+};
+
+// Function reference and definition of resetPlayer as prototype method. 
+// The prototype method is encapsulated inside the prototype object of 
+// the Player class.
+Player.prototype.resetPlayer = function() {
+    alert ("WAY TO GO!");
+    player.x = 200;  //Using 'this' won't reset the player!
+    player.y = 406;
 };
 
 // This listens for key presses and sends the keys to your
