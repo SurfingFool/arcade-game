@@ -69,13 +69,6 @@ var checkCollisions = function() {
     }
 };
 
-// Defining a function called winner. Called when player reaches water.
-var winner = function() {
-    alert("WAY TO GO!");
-    player.x = 200;
-    player.y = 406;
-};
-
 Player.prototype.update = function(allEnemies) {
     checkCollisions(allEnemies);
 
@@ -95,6 +88,13 @@ Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+// Defining a function called playerReset. Called when player reaches water.
+Player.prototype.playerReset = function() {
+    alert("WAY TO GO!");
+    this.x = 200;
+    this.y = 406;
+};
+
 Player.prototype.handleInput = function(dir) {
     if (dir === 'up') {
         this.y -= 83;
@@ -107,11 +107,11 @@ Player.prototype.handleInput = function(dir) {
     }
 
     // Condition when reaching water in response to input. Works with 
-    // setTimeout to delay calling the winner function.  Includes 
-    // (function, milliseconds).  Will invoke function once 100ms condition
-    // is met.
+    // setTimeout to delay calling the playerReset function.  Includes 
+    // (function bound to this particular instance, milliseconds). 
+    // Will invoke function once 100ms condition is met.
     if (this.y <= -9) {
-        setTimeout(winner, 100);
+        setTimeout(this.playerReset.bind(this), 100);
     }
 };
 
